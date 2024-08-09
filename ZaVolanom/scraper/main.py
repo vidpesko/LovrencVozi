@@ -33,6 +33,7 @@ class Event(BaseModel):
 class FilterOption(BaseModel):
     value: str
     label: str
+    parent: str | None = None 
 
 
 class Filter(BaseModel):
@@ -56,7 +57,7 @@ class Scraper:
         html = response.content
         return BeautifulSoup(html, gv.SCRAPER_PARSER)
 
-    def get_dropdown_options(self, select_html) -> List[FilterOption]:
+    def get_dropdown_options(self, select_html, parent=False) -> List[FilterOption]:
         options = []
         for option in select_html.children:
             if option == "\n":
@@ -64,12 +65,17 @@ class Scraper:
 
             value = option["value"]
             label = str(option.string).strip()
-            
-            option = FilterOption(
+
+            option_model = FilterOption(
                 value=value,
                 label=label
             )
-            options.append(option)
+
+            if parent:
+                parent_id = option.get("data-parent", None)
+                option_model.parent = parent_id
+
+            options.append(option_model)
         return options
 
     def get_events(self, url: str) -> List[Event]:
@@ -180,7 +186,7 @@ class Scraper:
                 location_filter = Filter(
                     input_name=location_filter_input_name,
                     group_name="Lokacija",
-                    options=self.get_dropdown_options(location_filter_html)
+                    options=self.get_dropdown_options(location_filter_html, parent=True)
                 )
 
                 filters.append(district_filter)
@@ -213,6 +219,7 @@ class Scraper:
         return filters
 
 
-s = Scraper()
-filters = s.get_filters(gv.MAIN_PAGE_URL)
-# print(filters)
+if __name__ == "__main__":
+    s = Scraper()
+    filters = s.get_filters(gv.MAIN_PAGE_URL)
+    print(filters[3].model_dump_json())  # (2)!
