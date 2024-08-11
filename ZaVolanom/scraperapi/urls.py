@@ -1,9 +1,10 @@
 # include necessary libraries
 from django.urls import path
 
-from .views import main
+from scraperapi.views import EventListenerList, EventListenerDetail
 
 
 urlpatterns = [
-    path('', main)
+    path('<str:email>', EventListenerList.as_view()),
+    path('<int:pk>', EventListenerDetail.as_view())
 ]

@@ -102,4 +102,18 @@ Implementiraj kasneje, zaenkrat anonimni uporabniki zadoščajo
 
 > Zgornje strani bodo implementirane v REACT front-end-u. Preko tega API bo react komuniciral s strežnikom.
 
-1. **add-reminder/**?=email=&tip=&kategorije=&območje=&lokacija=&trenutni-datum=
+1. **reminder/**
+
+## 1. reminder/
+
+- **Tip:** GET, POST
+
+- **(GET Query) Parametri:** email
+
+- **(POST Body) Parametri:** email, tip, kategorije, območje, lokacija, trenutni-datum
+
+- **Vrne:** Event model(s)
+
+- **Opis:** GET vrne vse opomnike, POST ustvari novega
+
+## 2. 
